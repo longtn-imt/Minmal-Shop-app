@@ -1,24 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:minmalecommerce/utils/utils.dart';
+
+import '../utils/dimens.dart';
 
 class MyButton extends StatelessWidget {
-  final void Function()? onTap;
-  final Widget child;
   const MyButton({super.key, required this.onTap, required this.child});
+
+  final GestureTapCallback? onTap;
+  final Widget child;
+
   @override
   Widget build(BuildContext context) {
+    final Dimens dimens = Dimens.of(context);
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.white, width: 1.5),
-            color: Theme.of(context).colorScheme.primary,
-            borderRadius: BorderRadius.circular(15),
-          ),
-          padding: EdgeInsets.all(Utils.getScreenWidth(context) * 0.050 > 30
-              ? 30
-              : Utils.getScreenWidth(context) * 0.050),
-          child: child),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.white, width: 1.5),
+          color: Theme.of(context).colorScheme.primary,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        padding: dimens.edgeInsetsScreenSymmetric,
+        child: child,
+      ),
     );
   }
 }

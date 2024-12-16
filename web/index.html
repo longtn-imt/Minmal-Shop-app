@@ -18,42 +18,118 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="description" content="A Flutter E-Commerce project.">
 
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="minmalecommerce">
+  <meta name="apple-mobile-web-app-title" content="Minmal Shop">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>minmalecommerce</title>
+  <title>Minmal Shop</title>
   <link rel="manifest" href="manifest.json">
-
-  <script>
-    // The value below is injected by flutter build, do not touch.
-    const serviceWorkerVersion = null;
-  </script>
-  <!-- This script adds the flutter initialization JS code -->
-  <script src="flutter.js" defer></script>
 </head>
 <body>
+  <div id="loading">
+    <style>
+      body {
+        inset: 0;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+        position: fixed;
+      }
+
+      #loading {
+        align-items: center;
+        display: flex;
+        height: 100%;
+        justify-content: center;
+        width: 100%;
+      }
+
+      #loading img {
+        animation: 1s ease-in-out 0s infinite alternate breathe;
+        opacity: 0.75;
+        transition: opacity 0.4s;
+      }
+
+      #loading.main_done img {
+        opacity: 1;
+      }
+
+      #loading.init_done img {
+        animation: 0.33s ease-in-out 0s 1 forwards zooooom;
+        opacity: 0.05;
+      }
+
+      @keyframes breathe {
+        from {
+          transform: scale(1);
+        }
+
+        to {
+          transform: scale(0.95);
+        }
+      }
+
+      @keyframes zooooom {
+        from {
+          transform: scale(1);
+        }
+
+        to {
+          transform: scale(10);
+        }
+      }
+    </style>
+    <img src="icons/Icon-192.png" alt="Loading indicator..." />
+  </div>
   <script>
-    window.addEventListener('load', function(ev) {
-      // Download main.dart.js
-      _flutter.loader.loadEntrypoint({
-        serviceWorker: {
-          serviceWorkerVersion: serviceWorkerVersion,
+    {{flutter_js}}
+    {{flutter_build_config}}
+
+    var loading = document.querySelector("#loading");
+    
+    const searchParams = new URLSearchParams(window.location.search);
+    const forceCanvaskit = searchParams.get('force_canvaskit') === 'true';
+    const userConfig = forceCanvaskit ? {'renderer': 'canvaskit'} : {};
+    _flutter.loader
+      .load({
+        config: userConfig,
+        serviceWorkerSettings: {
+          serviceWorkerVersion: `{{flutter_service_worker_version}}`,
         },
-        onEntrypointLoaded: function(engineInitializer) {
-          engineInitializer.initializeEngine().then(function(appRunner) {
-            appRunner.runApp();
-          });
+        onEntrypointLoaded: async function(engineInitializer) {
+          // Initializing the engine: opacity animation to 1.0
+          loading.classList.add("main_done");
+          const appRunner = await engineInitializer.initializeEngine();
+
+          // Running the app: Zoom animation to 10x
+          loading.classList.add("init_done");
+          const values = await Promise.all([
+            appRunner.runApp(),
+            new Promise((resolve) => setTimeout(resolve, 250)),
+          ]);
+
+          /// App is running: Remove loading indicator
+          loading.remove();
+          const app = values[0];
         }
       });
-    });
+  </script>
+  <script>
+    document.addEventListener(
+      'touchstart',
+      (startEvent) => {
+        if (startEvent.touches.length > 1) return;
+        startEvent.preventDefault();
+      },
+      { passive: false }
+    );  
   </script>
 </body>
 </html>

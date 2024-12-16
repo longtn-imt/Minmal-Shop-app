@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
-import 'package:minmalecommerce/components/my_button.dart';
-import 'package:minmalecommerce/models/product_model.dart';
-import 'package:minmalecommerce/models/shop_model.dart';
-import 'package:minmalecommerce/utils/utils.dart';
 import 'package:provider/provider.dart';
-import 'package:universal_platform/universal_platform.dart';
+
+import '../components/my_button.dart';
+import '../models/product_model.dart';
+import '../models/shop_model.dart';
+import '../utils/dimens.dart';
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
@@ -15,13 +15,13 @@ class CartPage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        content: const Text("Remove this item to cart ?"),
+        title: const Text("Xóa sản phẩm này khỏi giỏ hàng?"),
         actions: [
           MaterialButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            child: const Text("Cancel"),
+            child: const Text("Hủy bỏ"),
           ),
           MaterialButton(
             onPressed: () {
@@ -29,7 +29,7 @@ class CartPage extends StatelessWidget {
 
               context.read<Shop>().removeFromCart(item: product);
             },
-            child: const Text("Yes"),
+            child: const Text("Đúng"),
           )
         ],
       ),
@@ -40,21 +40,23 @@ class CartPage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => const AlertDialog(
-        content:
-            Text("User want to pay! Connect this app to your pyment backend "),
+        title: Text(
+            "Người dùng muốn thanh toán! Kết nối ứng dụng này với phần thanh toán của bạn"),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    // print(Utils.getScreenWidth(context) * 0.10);
+    final theme = Theme.of(context);
+    final dimens = Dimens.of(context);
     final cart = context.watch<Shop>().cart;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Cart "),
+        title: const Text("Giỏ hàng"),
+        iconTheme: theme.iconTheme.copyWith(size: dimens.sizeIconMedium),
       ),
-      backgroundColor: Theme.of(context).colorScheme.background,
       body: Column(
         children: [
           Expanded(
@@ -64,24 +66,15 @@ class CartPage extends StatelessWidget {
                       children: [
                         Icon(
                           FontAwesomeIcons.cartArrowDown,
-                          size: Utils.getScreenWidth(context) * 0.17 >= 120
-                              ? 120
-                              : Utils.getScreenWidth(context) * 0.17,
+                          size: dimens.sizeIconLager,
                         ),
-                        SizedBox(
-                          height: Utils.getScreenHeight(context) * 0.02,
-                        ),
+                        SizedBox(height: dimens.paddingScreenVertical),
                         Center(
-                            child: Text(
-                          "Your Cart is Empty",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: (UniversalPlatform.isDesktop ||
-                                    UniversalPlatform.isWeb)
-                                ? Utils.getScreenWidth(context) * 0.027
-                                : Utils.getScreenWidth(context) * 0.04,
+                          child: Text(
+                            "Giỏ hàng của bạn đang trống",
+                            style: theme.textTheme.headlineMedium,
                           ),
-                        )),
+                        ),
                       ],
                     )
                   : ListView.builder(
@@ -105,12 +98,11 @@ class CartPage extends StatelessWidget {
                       },
                     )),
           Padding(
-            padding: const EdgeInsets.all(50.0),
+            padding: dimens.edgeInsetsScreenSymmetric,
             child: MyButton(
-                onTap: () {
-                  payButtonPressed(context);
-                },
-                child: Text("PYA NOW ")),
+              onTap: () => payButtonPressed(context),
+              child: const Text("THANH TOÁN NGAY"),
+            ),
           )
         ],
       ),

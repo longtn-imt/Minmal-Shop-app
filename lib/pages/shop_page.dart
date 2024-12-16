@@ -1,73 +1,78 @@
 import 'package:flutter/material.dart';
-// import 'dart:io';
-import 'package:universal_platform/universal_platform.dart';
-import 'package:minmalecommerce/components/my_drawer.dart';
-import 'package:minmalecommerce/components/my_product_tile.dart';
-import 'package:minmalecommerce/models/shop_model.dart';
-import 'package:minmalecommerce/pages/cart_page.dart';
-import 'package:minmalecommerce/utils/scroller.dart';
-import 'package:minmalecommerce/utils/utils.dart';
 import 'package:provider/provider.dart';
 
+import '../components/my_drawer.dart';
+import '../components/my_product_tile.dart';
+import '../models/product_model.dart';
+import '../models/shop_model.dart';
+import '../utils/dimens.dart';
+import 'cart_page.dart';
+
 class ShopPage extends StatelessWidget {
-  ShopPage({super.key});
-  final ScrollController controller = ScrollController();
+  const ShopPage({super.key});
 
   static String id = '/shop_page';
+
   @override
   Widget build(BuildContext context) {
-    final products = context.watch<Shop>().shop;
+    final ThemeData theme = Theme.of(context);
+    final Dimens dimens = Dimens.of(context);
+    final List<Product> products = context.watch<Shop>().shop;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Shop'), actions: [
-        IconButton(
-          icon: const Icon(
-            Icons.shopping_cart,
+      appBar: AppBar(
+        iconTheme: theme.iconTheme.copyWith(size: dimens.sizeIconMedium),
+        title: const Text('Mua sắm'),
+        actions: [
+          SearchAnchor(
+            isFullScreen: true,
+            builder: (BuildContext context, SearchController controller) {
+              return IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: controller.openView,
+              );
+            },
+            suggestionsBuilder: (context, SearchController controller) {
+              return products
+                  .where((product) => product.name.contains(controller.text))
+                  .map(
+                    (product) => ListTile(
+                      title: Text(product.name),
+                      onTap: () => controller.closeView(product.name),
+                    ),
+                  );
+            },
           ),
-          onPressed: () {
-            Navigator.pushNamed(context, CartPage.id);
-          },
-        ),
-      ]),
-      backgroundColor: Theme.of(context).colorScheme.background,
+          IconButton(
+            icon: const Icon(Icons.shopping_cart),
+            onPressed: () => Navigator.pushNamed(context, CartPage.id),
+          ),
+        ],
+      ),
       drawer: const MyDrawer(),
-      body: ListView(
+      body: Column(
         children: [
-          SizedBox(
-            height: Utils.getScreenHeight(context) * 0.025,
-          ),
-          Padding(
-            padding:
-                EdgeInsets.only(bottom: Utils.getScreenHeight(context) * 0.015),
-            child: Center(
-              child: Text(
-                "Pick from a Selected list of premium products ",
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.inversePrimary),
+          Center(
+            child: Text(
+              "Chọn từ danh sách các sản phẩm cao cấp được chọn lọc",
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.inversePrimary,
               ),
             ),
           ),
-          ScrollConfiguration(
-              behavior: MyCustomScrollBehavior(),
-              child: SizedBox(
-                height: UniversalPlatform.isDesktop || UniversalPlatform.isWeb
-                    ? Utils.getScreenHeight(context) > 500
-                        ? Utils.getScreenHeight(context) * 0.80
-                        : Utils.getScreenHeight(context) * 0.70
-                    : Utils.getScreenHeight(context) * 0.68,
-                child: ListView.builder(
-                  controller: controller,
-                  scrollDirection: Axis.horizontal,
-                  padding: EdgeInsets.symmetric(
-                      horizontal: Utils.getScreenWidth(context) * 0.03,
-                      vertical: Utils.getScreenWidth(context) * 0.005),
-                  itemCount: products.length,
-                  itemBuilder: (context, index) {
-                    final product = products[index];
-                    return MyProductTile(product: product);
-                  },
-                ),
-              ))
+          Expanded(
+            child: CarouselView(
+              itemSnapping: true,
+              enableSplash: false,
+              itemExtent: dimens.widthProduct,
+              shrinkExtent: dimens.widthProduct,
+              padding: dimens.edgeInsetsProductAll,
+              children: List.generate(
+                products.length,
+                (index) => MyProductTile(product: products[index]),
+              ),
+            ),
+          )
         ],
       ),
     );

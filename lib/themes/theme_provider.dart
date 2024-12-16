@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:minmalecommerce/themes/theme_mode.dart';
 
 class ThemeProvider with ChangeNotifier {
-  ThemeData _themeData = lightmode;
-  ThemeData get themeData => _themeData;
-  set themeData(ThemeData themeData) {
-    _themeData = themeData;
+  ThemeMode _themeMode = ThemeMode.light;
+  ThemeMode get themeMode => _themeMode;
+  set themeMode(ThemeMode themeMode) {
+    _themeMode = themeMode;
     notifyListeners();
   }
 
   void toggleTheme() {
-    if (_themeData == lightmode) {
-      themeData = darkmode;
+    if (_themeMode == ThemeMode.light) {
+      themeMode = ThemeMode.dark;
     } else {
-      themeData = lightmode;
+      themeMode = ThemeMode.light;
     }
   }
 }

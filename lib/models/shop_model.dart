@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:minmalecommerce/models/product_model.dart';
+import 'product_model.dart';
 
 class Shop extends ChangeNotifier {
 //products for sale
@@ -52,7 +52,7 @@ class Shop extends ChangeNotifier {
         imagePath: "assets/images/products/sunglasses.png"),
   ];
 //user cart
-  List<Product> _cart = [];
+  final List<Product> _cart = [];
 
 //get products list
   List<Product> get shop => _shop;

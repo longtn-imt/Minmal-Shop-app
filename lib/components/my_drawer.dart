@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:minmalecommerce/components/my_list_tile.dart';
-import 'package:minmalecommerce/pages/about_page.dart';
-import 'package:minmalecommerce/pages/cart_page.dart';
-import 'package:minmalecommerce/pages/intro_page.dart';
-import 'package:minmalecommerce/pages/settings_page.dart';
-import 'package:minmalecommerce/utils/utils.dart';
+
+import '../pages/about_page.dart';
+import '../pages/cart_page.dart';
+import '../pages/intro_page.dart';
+import '../pages/settings_page.dart';
+import '../utils/dimens.dart';
+import 'my_list_tile.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    print("size drwer");
-    print(Utils.getScreenWidth(context) * 0.2);
+    final Dimens dimens = Dimens.of(context);
+
     return Drawer(
-      backgroundColor: Theme.of(context).colorScheme.background,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -24,26 +24,21 @@ class MyDrawer extends StatelessWidget {
               DrawerHeader(
                 child: Icon(
                   Icons.shopping_bag,
-                  size: Utils.getScreenWidth(context) * 0.2 < 100
-                      ? Utils.getScreenWidth(context) * 0.2
-                      : 100,
+                  size: dimens.sizeIconLager,
                   color: Theme.of(context).colorScheme.inversePrimary,
                 ),
               ),
-              SizedBox(
-                height: Utils.getScreenHeight(context) * 0.02,
-              ),
+              SizedBox(height: dimens.paddingScreenVertical),
               // shop tile
               MyListTile(
-                text: "Shop",
+                text: "Cửa hàng",
                 icon: Icons.home,
                 onTap: () {
-                  print("object");
                   Navigator.pop(context);
                 },
               ),
               MyListTile(
-                text: "Cart",
+                text: "Giỏ hàng",
                 icon: Icons.shopping_cart,
                 onTap: () {
                   Navigator.pop(context);
@@ -52,7 +47,7 @@ class MyDrawer extends StatelessWidget {
                 },
               ),
               MyListTile(
-                text: "Settings",
+                text: "Cài đặt",
                 icon: Icons.settings,
                 onTap: () {
                   Navigator.pop(context);
@@ -61,7 +56,7 @@ class MyDrawer extends StatelessWidget {
                 },
               ),
               MyListTile(
-                text: "About",
+                text: "Giới thiệu",
                 icon: Icons.info,
                 onTap: () {
                   Navigator.pop(context);
@@ -72,15 +67,15 @@ class MyDrawer extends StatelessWidget {
             ],
           ),
           Padding(
-            padding: EdgeInsets.symmetric(
-                vertical: Utils.getScreenHeight(context) * 0.02),
+            padding: dimens.edgeInsetsScreenVertical,
             child: MyListTile(
-              text: "Exit",
+              text: "Thoát",
               icon: Icons.logout,
-              onTap: () {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, IntroPage.id, (route) => false);
-              },
+              onTap: () => Navigator.pushNamedAndRemoveUntil(
+                context,
+                IntroPage.id,
+                (route) => false,
+              ),
             ),
           ),
         ],

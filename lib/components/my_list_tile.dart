@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/dimens.dart';
+
 class MyListTile extends StatelessWidget {
   final String text;
   final IconData icon;
@@ -9,6 +11,8 @@ class MyListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Dimens dimens = Dimens.of(context);
+
     return Padding(
       padding: const EdgeInsets.only(left: 20.0),
       child: ListTile(
@@ -18,6 +22,7 @@ class MyListTile extends StatelessWidget {
         leading: Icon(
           icon,
           color: Colors.grey,
+          size: dimens.sizeIconMedium,
         ),
         onTap: onTap,
       ),

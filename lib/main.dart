@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:minmalecommerce/models/shop_model.dart';
-import 'package:minmalecommerce/pages/about_page.dart';
-import 'package:minmalecommerce/pages/cart_page.dart';
-import 'package:minmalecommerce/pages/intro_page.dart';
-import 'package:minmalecommerce/pages/settings_page.dart';
-import 'package:minmalecommerce/pages/shop_page.dart';
-import 'package:minmalecommerce/themes/theme_mode.dart';
-import 'package:minmalecommerce/themes/theme_provider.dart';
 import 'package:provider/provider.dart';
 
+import 'models/shop_model.dart';
+import 'pages/about_page.dart';
+import 'pages/cart_page.dart';
+import 'pages/intro_page.dart';
+import 'pages/settings_page.dart';
+import 'pages/shop_page.dart';
+import 'themes/theme_mode.dart';
+import 'themes/theme_provider.dart';
 
 void main() {
   runApp(MultiProvider(
@@ -30,13 +30,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       home: const IntroPage(),
-      theme: Provider.of<ThemeProvider>(context).themeData,
+      themeMode: Provider.of<ThemeProvider>(context).themeMode,
+      theme: lightmode,
       darkTheme: darkmode,
       routes: {
         IntroPage.id: (context) => const IntroPage(),
-        ShopPage.id: (context) => ShopPage(),
+        ShopPage.id: (context) => const ShopPage(),
         CartPage.id: (context) => const CartPage(),
         SettingsPage.id: (context) => const SettingsPage(),
         AboutPage.id: (context) => const AboutPage(),
